@@ -1,6 +1,12 @@
 	.text	0x00400000
 	.globl	main
 	la	$28, _heap_
+	la	$11, _Incorre_52_
+# was:	la	_Incorre_52__addr, _Incorre_52_
+	ori	$10, $0, 16
+# was:	ori	_Incorre_52__init, 0, 16
+	sw	$10, 0($11)
+# was:	sw	_Incorre_52__init, 0(_Incorre_52__addr)
 	la	$11, _true
 # was:	la	_true_addr, _true
 	ori	$10, $0, 4
@@ -185,8 +191,7 @@ _loop_end_39_:
 # Function main
 main:
 	sw	$31, -4($29)
-	sw	$16, -8($29)
-	addi	$29, $29, -12
+	addi	$29, $29, -8
 	jal	getint
 # was:	jal	getint, 2
 # 	ori	_letBind_43_,2,0
@@ -199,26 +204,25 @@ main:
 # was:	bne	_cond_47_, 0, _then_44_
 	j	_else_45_
 _then_44_:
-	ori	$16, $0, 0
-# was:	ori	_tmp_50_, 0, 0
-# 	ori	_mainres_42_,_tmp_50_,0
-	ori	$2, $16, 0
-# was:	ori	2, _mainres_42_, 0
-	jal	putint
-# was:	jal	putint, 2
+	la	$2, _Incorre_52_
+# was:	la	_tmp_51_, _Incorre_52_
+# _Incorre_52_: string "Incorrect Input!"
+# 	ori	_letBind_50_,_tmp_51_,0
+# 	ori	2,_tmp_51_,0
+	jal	putstring
+# was:	jal	putstring, 2
+	ori	$2, $0, 0
+# was:	ori	_mainres_42_, 0, 0
 	j	_endif_46_
 _else_45_:
-# 	ori	_arg_51_,_letBind_43_,0
-# 	ori	2,_arg_51_,0
+# 	ori	_arg_53_,_letBind_43_,0
+# 	ori	2,_arg_53_,0
 	jal	compute
 # was:	jal	compute, 2
-	ori	$16, $2, 0
-# was:	ori	_mainres_42_, 2, 0
+# 	ori	_mainres_42_,2,0
 _endif_46_:
-	ori	$2, $16, 0
-# was:	ori	2, _mainres_42_, 0
-	addi	$29, $29, 12
-	lw	$16, -8($29)
+# 	ori	2,_mainres_42_,0
+	addi	$29, $29, 8
 	lw	$31, -4($29)
 	jr	$31
 ord:
@@ -316,6 +320,10 @@ _space_:
 _IllegalArrSizeString_:
 	.asciiz	"Error: Array size less or equal to 0 at line "
 # String Literals
+	.align	2
+_Incorre_52_:
+	.space	4
+	.asciiz	"Incorrect Input!"
 	.align	2
 _true:
 	.space	4

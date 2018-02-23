@@ -21,6 +21,10 @@ type token =
   | REDUCE of ((int*int))
   | IOTA of ((int*int))
   | ARROW of ((int*int))
+  | NOT of ((int*int))
+  | NEGATE of ((int*int))
+  | AND of ((int*int))
+  | OR of ((int*int))
   | TIMES of ((int*int))
   | DIVIDE of ((int*int))
   | PLUS of ((int*int))
@@ -35,6 +39,8 @@ type token =
   | LET of ((int*int))
   | IN of ((int*int))
   | EOF of ((int*int))
+  | TRUE of (bool*(int*int))
+  | FALSE of (bool*(int*int))
   | ID of (string*(int*int))
   | STRINGLIT of (string*(int*int))
   | CHARLIT of (char*(int*int))
@@ -60,6 +66,10 @@ type tokenId =
     | TOKEN_REDUCE
     | TOKEN_IOTA
     | TOKEN_ARROW
+    | TOKEN_NOT
+    | TOKEN_NEGATE
+    | TOKEN_AND
+    | TOKEN_OR
     | TOKEN_TIMES
     | TOKEN_DIVIDE
     | TOKEN_PLUS
@@ -74,6 +84,8 @@ type tokenId =
     | TOKEN_LET
     | TOKEN_IN
     | TOKEN_EOF
+    | TOKEN_TRUE
+    | TOKEN_FALSE
     | TOKEN_ID
     | TOKEN_STRINGLIT
     | TOKEN_CHARLIT

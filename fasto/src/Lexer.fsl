@@ -66,9 +66,9 @@ let keyword (s, pos) =
 //////////////// RETTET ////////////////
        | "true"         -> Parser.TRUE (true, pos)
        | "false"        -> Parser.FALSE (false, pos)
-       | "replicate"    -> Parser.REPLICATE pos
-       | "map"          -> Parser.MAP pos
-       | "scan"         -> Parser.SCAN pos
+//       | "replicate"    -> Parser.REPLICATE pos
+//       | "map"          -> Parser.MAP pos
+//       | "scan"         -> Parser.SCAN pos
        | "not"          -> Parser.NOT pos
 ////////////////////////////////////////
 

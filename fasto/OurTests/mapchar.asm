@@ -23,16 +23,16 @@ this:
 	addi	$29, $29, -8
 # 	ori	_param_num_1_,2,0
 # 	ori	_eq_L_7_,_param_num_1_,0
-	ori	$10, $0, 100
-# was:	ori	_zero_9_, 0, 100
-	ori	$11, $0, 0
+	ori	$11, $0, 100
+# was:	ori	_eq_R_8_, 0, 100
+	ori	$10, $0, 0
 # was:	ori	_cond_6_, 0, 0
-	bne	$2, $10, _false_10_
-# was:	bne	_eq_L_7_, _zero_9_, _false_10_
-	ori	$11, $0, 1
+	bne	$2, $11, _false_9_
+# was:	bne	_eq_L_7_, _eq_R_8_, _false_9_
+	ori	$10, $0, 1
 # was:	ori	_cond_6_, 0, 1
-_false_10_:
-	bne	$11, $0, _then_3_
+_false_9_:
+	bne	$10, $0, _then_3_
 # was:	bne	_cond_6_, 0, _then_3_
 	j	_else_4_
 _then_3_:
@@ -55,101 +55,101 @@ main:
 	sw	$17, -12($29)
 	sw	$16, -8($29)
 	addi	$29, $29, -28
-	ori	$10, $0, 4
-# was:	ori	_size_reg_13_, 0, 4
-	ori	$18, $28, 0
-# was:	ori	_letBind_12_, 28, 0
-	addi	$11, $10, 3
-# was:	addi	_tmp_16_, _size_reg_13_, 3
+	ori	$12, $0, 4
+# was:	ori	_size_reg_12_, 0, 4
+	ori	$10, $28, 0
+# was:	ori	_letBind_11_, 28, 0
+	addi	$11, $12, 3
+# was:	addi	_tmp_15_, _size_reg_12_, 3
 	sra	$11, $11, 2
-# was:	sra	_tmp_16_, _tmp_16_, 2
+# was:	sra	_tmp_15_, _tmp_15_, 2
 	sll	$11, $11, 2
-# was:	sll	_tmp_16_, _tmp_16_, 2
+# was:	sll	_tmp_15_, _tmp_15_, 2
 	addi	$11, $11, 4
-# was:	addi	_tmp_16_, _tmp_16_, 4
+# was:	addi	_tmp_15_, _tmp_15_, 4
 	add	$28, $28, $11
-# was:	add	28, 28, _tmp_16_
-	sw	$10, 0($18)
-# was:	sw	_size_reg_13_, 0(_letBind_12_)
-	addi	$11, $18, 4
-# was:	addi	_addr_reg_14_, _letBind_12_, 4
-	ori	$10, $0, 100
-# was:	ori	_tmp_reg_15_, 0, 100
-	sb	$10, 0($11)
-# was:	sb	_tmp_reg_15_, 0(_addr_reg_14_)
+# was:	add	28, 28, _tmp_15_
+	sw	$12, 0($10)
+# was:	sw	_size_reg_12_, 0(_letBind_11_)
+	addi	$11, $10, 4
+# was:	addi	_addr_reg_13_, _letBind_11_, 4
+	ori	$12, $0, 100
+# was:	ori	_tmp_reg_14_, 0, 100
+	sb	$12, 0($11)
+# was:	sb	_tmp_reg_14_, 0(_addr_reg_13_)
 	addi	$11, $11, 1
-# was:	addi	_addr_reg_14_, _addr_reg_14_, 1
-	ori	$10, $0, 99
-# was:	ori	_tmp_reg_15_, 0, 99
-	sb	$10, 0($11)
-# was:	sb	_tmp_reg_15_, 0(_addr_reg_14_)
+# was:	addi	_addr_reg_13_, _addr_reg_13_, 1
+	ori	$12, $0, 99
+# was:	ori	_tmp_reg_14_, 0, 99
+	sb	$12, 0($11)
+# was:	sb	_tmp_reg_14_, 0(_addr_reg_13_)
 	addi	$11, $11, 1
-# was:	addi	_addr_reg_14_, _addr_reg_14_, 1
-	ori	$10, $0, 98
-# was:	ori	_tmp_reg_15_, 0, 98
-	sb	$10, 0($11)
-# was:	sb	_tmp_reg_15_, 0(_addr_reg_14_)
+# was:	addi	_addr_reg_13_, _addr_reg_13_, 1
+	ori	$12, $0, 98
+# was:	ori	_tmp_reg_14_, 0, 98
+	sb	$12, 0($11)
+# was:	sb	_tmp_reg_14_, 0(_addr_reg_13_)
 	addi	$11, $11, 1
-# was:	addi	_addr_reg_14_, _addr_reg_14_, 1
-	ori	$10, $0, 97
-# was:	ori	_tmp_reg_15_, 0, 97
-	sb	$10, 0($11)
-# was:	sb	_tmp_reg_15_, 0(_addr_reg_14_)
+# was:	addi	_addr_reg_13_, _addr_reg_13_, 1
+	ori	$12, $0, 97
+# was:	ori	_tmp_reg_14_, 0, 97
+	sb	$12, 0($11)
+# was:	sb	_tmp_reg_14_, 0(_addr_reg_13_)
 	addi	$11, $11, 1
-# was:	addi	_addr_reg_14_, _addr_reg_14_, 1
-# 	ori	_arr_reg_18_,_letBind_12_,0
-	lw	$17, 0($18)
-# was:	lw	_size_reg_19_, 0(_arr_reg_18_)
+# was:	addi	_addr_reg_13_, _addr_reg_13_, 1
+# 	ori	_arr_reg_18_,_letBind_11_,0
+	lw	$17, 0($10)
+# was:	lw	_size_reg_17_, 0(_arr_reg_18_)
 	ori	$16, $28, 0
-# was:	ori	_letBind_17_, 28, 0
-	addi	$10, $17, 3
-# was:	addi	_tmp_25_, _size_reg_19_, 3
-	sra	$10, $10, 2
-# was:	sra	_tmp_25_, _tmp_25_, 2
-	sll	$10, $10, 2
-# was:	sll	_tmp_25_, _tmp_25_, 2
-	addi	$10, $10, 4
-# was:	addi	_tmp_25_, _tmp_25_, 4
-	add	$28, $28, $10
-# was:	add	28, 28, _tmp_25_
+# was:	ori	_letBind_16_, 28, 0
+	addi	$11, $17, 3
+# was:	addi	_tmp_27_, _size_reg_17_, 3
+	sra	$11, $11, 2
+# was:	sra	_tmp_27_, _tmp_27_, 2
+	sll	$11, $11, 2
+# was:	sll	_tmp_27_, _tmp_27_, 2
+	addi	$11, $11, 4
+# was:	addi	_tmp_27_, _tmp_27_, 4
+	add	$28, $28, $11
+# was:	add	28, 28, _tmp_27_
 	sw	$17, 0($16)
-# was:	sw	_size_reg_19_, 0(_letBind_17_)
-	addi	$18, $18, 4
-# was:	addi	_arr_reg_18_, _arr_reg_18_, 4
-	addi	$19, $16, 4
-# was:	addi	_rez_reg_20_, _letBind_17_, 4
-	ori	$20, $0, 0
-# was:	ori	_ind_var_21_, 0, 0
+# was:	sw	_size_reg_17_, 0(_letBind_16_)
+	addi	$18, $16, 4
+# was:	addi	_addr_reg_21_, _letBind_16_, 4
+	ori	$19, $0, 0
+# was:	ori	_i_reg_22_, 0, 0
+	addi	$20, $10, 4
+# was:	addi	_elem_reg_19_, _arr_reg_18_, 4
 _loop_beg_23_:
-	sub	$2, $20, $17
-# was:	sub	_tmp_reg_22_, _ind_var_21_, _size_reg_19_
-	bgez	$2, _loop_end_24_
-# was:	bgez	_tmp_reg_22_, _loop_end_24_
-	lb	$2, 0($18)
-# was:	lb	_tmp_reg_22_, 0(_arr_reg_18_)
-# 	ori	2,_tmp_reg_22_,0
+	sub	$10, $19, $17
+# was:	sub	_tmp_reg_25_, _i_reg_22_, _size_reg_17_
+	bgez	$10, _loop_end_24_
+# was:	bgez	_tmp_reg_25_, _loop_end_24_
+	lb	$2, 0($20)
+# was:	lb	_res_reg_20_, 0(_elem_reg_19_)
+# 	ori	2,_res_reg_20_,0
 	jal	this
 # was:	jal	this, 2
 # 	ori	_tmp_reg_26_,2,0
-# 	ori	_tmp_reg_22_,_tmp_reg_26_,0
-	sb	$2, 0($19)
-# was:	sb	_tmp_reg_22_, 0(_rez_reg_20_)
-	addi	$18, $18, 1
-# was:	addi	_arr_reg_18_, _arr_reg_18_, 1
-	addi	$19, $19, 1
-# was:	addi	_rez_reg_20_, _rez_reg_20_, 1
+# 	ori	_res_reg_20_,_tmp_reg_26_,0
 	addi	$20, $20, 1
-# was:	addi	_ind_var_21_, _ind_var_21_, 1
+# was:	addi	_elem_reg_19_, _elem_reg_19_, 1
+	sb	$2, 0($18)
+# was:	sb	_res_reg_20_, 0(_addr_reg_21_)
+	addi	$18, $18, 1
+# was:	addi	_addr_reg_21_, _addr_reg_21_, 1
+	addi	$19, $19, 1
+# was:	addi	_i_reg_22_, _i_reg_22_, 1
 	j	_loop_beg_23_
 _loop_end_24_:
-# 	ori	_tmp_27_,_letBind_17_,0
-# 	ori	_mainres_11_,_tmp_27_,0
+# 	ori	_tmp_28_,_letBind_16_,0
+# 	ori	_mainres_10_,_tmp_28_,0
 	ori	$2, $16, 0
-# was:	ori	2, _tmp_27_, 0
+# was:	ori	2, _tmp_28_, 0
 	jal	putstring
 # was:	jal	putstring, 2
 	ori	$2, $16, 0
-# was:	ori	2, _mainres_11_, 0
+# was:	ori	2, _mainres_10_, 0
 	addi	$29, $29, 28
 	lw	$20, -24($29)
 	lw	$19, -20($29)
