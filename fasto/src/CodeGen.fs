@@ -660,6 +660,7 @@ let rec compileExp  (e      : TypedExp)
   *)
 //------------Redigeret----------------
 | Scan (binop, acc_exp, arr_exp, elem_type, pos) ->
+
       let res_it   = newName "res_reg"
       let inp_it   = newName "inp_reg"
       let len_reg  = newName "size_reg"
