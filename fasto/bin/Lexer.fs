@@ -51,7 +51,7 @@ let keyword (s, pos) =
        | "true"         -> Parser.TRUE (true, pos)
        | "false"        -> Parser.FALSE (false, pos)
 //       | "replicate"    -> Parser.REPLICATE pos
-//       | "map"          -> Parser.MAP pos
+//       | "filter"          -> Parser.FILTER pos
 //       | "scan"         -> Parser.SCAN pos
        | "not"          -> Parser.NOT pos
 ////////////////////////////////////////

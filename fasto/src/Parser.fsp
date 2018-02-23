@@ -50,7 +50,7 @@ let parse_error_rich =
 %token <(int*int)> TIMES DIVIDE         //
 %token <(int*int)> AND OR               //
 %token <(int*int)> NOT NEGATE           //
-//%token <(int*int)> REPLICATE MAP SCAN   //
+//%token <(int*int)> REPLICATE FILTER SCAN   //
 //////////////////////////////////////////
 
 %token <(int*int)> DEQ LTH EQ OP MAP REDUCE IOTA ARROW
