@@ -37,13 +37,21 @@ let parse_error_rich =
 %token <int*(int*int)> NUM
 %token <char*(int*int)> CHARLIT
 %token <string*(int*int)> ID STRINGLIT
+
+//RETTET//////////////////////////////////
+%token <bool*(int*int)> TRUE FALSE      //
+//////////////////////////////////////////
+
 %token <(int*int)> IF THEN ELSE LET IN EOF
 %token <(int*int)> INT CHAR BOOL
 %token <(int*int)> PLUS MINUS LESS
 
-///////////// RETTET /////////////
-%token <(int*int)> TIMES DIVIDE
-//////////////////////////////////
+//RETTET//////////////////////////////////
+%token <(int*int)> TIMES DIVIDE         //
+%token <(int*int)> AND OR               //
+%token <(int*int)> NOT NEGATE           //
+%token <(int*int)> REPLICATE MAP SCAN   //
+//////////////////////////////////////////
 
 %token <(int*int)> DEQ LTH EQ OP MAP REDUCE IOTA ARROW
 %token <(int*int)> FUN FN COMMA SEMICOLON READ WRITE
@@ -53,9 +61,15 @@ let parse_error_rich =
 %left DEQ LTH
 %left PLUS MINUS
 
-///////////// RETTET /////////////
-%left TIMES DIVIDE
-//////////////////////////////////
+///////RETTET///////////
+%left OR              //
+%left AND             //
+%left NOT             //
+%left DEQ LTH         //
+%left PLUS MINUS      //
+%left TIMES DIVIDE    //
+%left NEGATE          //
+////////////////////////
 
 %start Prog
 %type <AbSyn.UntypedProg> Prog
@@ -108,6 +122,12 @@ BinOp : PLUS  { (Lambda
 
 Exp : NUM            { Constant (IntVal (fst $1), snd $1) }
     | CHARLIT        { Constant (CharVal (fst $1), snd $1) }
+
+///RETTET////////////////////////////////////////////////////////
+    | TRUE           { Constant (BoolVal (fst $1), snd $1) }   //
+    | FALSE          { Constant (BoolVal (fst $1), snd $1) }   //
+/////////////////////////////////////////////////////////////////
+
     | ID             { Var $1 }
     | STRINGLIT      { StringLit $1 }
     | LCURLY Exps RCURLY
@@ -116,8 +136,12 @@ Exp : NUM            { Constant (IntVal (fst $1), snd $1) }
     | Exp MINUS Exp  { Minus($1, $3, $2) }
 
 ///////////// RETTET  /////////////
-    | Exp TIMES Exp  { Times ($1, $3, $2) }
-    | Exp DIVIDE Exp { Divide ($1, $3, $2) }
+    | Exp TIMES  Exp { Times  ($1, $3, $2) }   //
+    | Exp DIVIDE Exp { Divide ($1, $3, $2) }   //
+    | Exp AND    Exp { And    ($1, $3, $2) }   //
+    | Exp OR     Exp { Or     ($1, $3, $2) }   //
+    | NOT Exp        { Not    ($2, $1) }       //
+    | NEGATE Exp     { Negate ($2, $1) }       //
 ///////////////////////////////////
 
     | Exp DEQ   Exp  { Equal($1, $3, $2) }
