@@ -1,0 +1,15 @@
+fun int sum(int x) = x + x
+fun int red(int x, int y) = x + y
+
+fun int compute(int n) =
+  let arr = iota(n) in
+    let m = map(sum, arr) in
+      let r = reduce(red, 0, m) in
+        write(r)
+
+fun int main() =
+  let n = read(int) in
+  if n < 1 then
+    let x = write("Incorrect Input!") in 0
+  else
+    compute(n)
