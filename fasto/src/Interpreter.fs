@@ -172,8 +172,13 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
           | (IntVal n1, IntVal n2) -> IntVal (n1*n2)
           | _ -> invalidOperands "Multiply on non-integral args: " [(Int, Int)] res1 res2 pos
 
-  | Divide(_, _, _) ->
-        failwith "Unimplemented interpretation of division"
+  | Divide(e1, e2, pos) ->
+        let res1 = evalExp(e1, vtab, ftab)
+        let res2 = evalExp(e2, vtab, ftab)
+        match (res1, res2) with
+          | (IntVal n1, IntVal n2) -> IntVal (n1/n2)
+          | _ -> invalidOperands "Division on non-integral args: " [(Int, Int)] res1 res2 pos
+          
   | And (_, _, _) ->
         failwith "Unimplemented interpretation of &&"
   | Or (_, _, _) ->

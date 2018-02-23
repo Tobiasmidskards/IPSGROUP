@@ -1,0 +1,7 @@
+fun bool main() =
+  let a = read(int) in
+  let b = read(int) in
+
+  if (a - 1 == 1) && (b * 2 == 4)
+  then write(true)
+  else write(false)

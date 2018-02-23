@@ -1,0 +1,5 @@
+fun int writeBool(int b) = write(b)
+
+fun [int] main() =
+  let fs = replicate(7, 1) in
+  map(writeBool, fs)

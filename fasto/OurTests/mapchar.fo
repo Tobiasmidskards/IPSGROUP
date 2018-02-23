@@ -1,0 +1,8 @@
+fun char this(char num) =
+  if num == 'd' then 'a'
+  else num
+
+fun [char] main() =
+  let line = {'d','c','b','a'} in
+    let res = map(this, line) in
+      write(res)

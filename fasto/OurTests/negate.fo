@@ -1,0 +1,2 @@
+fun int main() =
+  let a = write(~ 32) in a
