@@ -70,6 +70,7 @@ let keyword (s, pos) =
 //       | "filter"          -> Parser.FILTER pos
 //       | "scan"         -> Parser.SCAN pos
        | "not"          -> Parser.NOT pos
+       | "negate"       -> Parser.NEGATE pos
 ////////////////////////////////////////
 
 
@@ -119,7 +120,7 @@ rule Token = parse
   | '/'                   { Parser.DIVIDE (getPos lexbuf) }
   | "&&"                  { Parser.AND      (getPos lexbuf) }
   | "||"                  { Parser.OR       (getPos lexbuf) }
-  //| "not"                 { Parser.NOT      (getPos lexbuf) }
+  | "!"                   { Parser.NOT      (getPos lexbuf) }
   | '~'                   { Parser.NEGATE   (getPos lexbuf) }
 //////////////////////////////////
 
