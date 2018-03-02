@@ -179,14 +179,36 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
           | (IntVal n1, IntVal n2) -> IntVal (n1/n2)
           | _ -> invalidOperands "Division on non-integral args: " [(Int, Int)] res1 res2 pos
           
-  | And (_, _, _) ->
-        failwith "Unimplemented interpretation of &&"
-  | Or (_, _, _) ->
-        failwith "Unimplemented interpretation of ||"
-  | Not(_, _) ->
-        failwith "Unimplemented interpretation of not"
-  | Negate(_, _) ->
-        failwith "Unimplemented interpretation of negate"
+  | And (e1, e2, pos) ->
+        let res1   = evalExp(e1, vtab, ftab)
+        match res1 with
+          | BoolVal false -> BoolVal false
+          | BoolVal true  -> let res2 = evalExp(e2, vtab, ftab)
+                             match res2 with
+                               | BoolVal false -> BoolVal false
+                               | BoolVal true  -> BoolVal true
+                               | _             -> invalidOperands "AND on non-boolean args: " [(Bool, Bool)] res1 res2 pos
+  | Or (e1, e2, pos) ->
+        let res1   = evalExp(e1, vtab, ftab)
+        match res1 with
+          | BoolVal true  -> BoolVal true
+          | BoolVal false -> let res2 = evalExp(e2, vtab, ftab)
+                             match res2 with
+                              | BoolVal false -> BoolVal false
+                              | BoolVal true  -> BoolVal true
+                              | _             -> invalidOperands "OR on non-boolean args: " [(Bool, Bool)] res1 res2 pos
+
+  | Not(e1, pos) ->
+        let res1   = evalExp(e1, vtab, ftab)
+        match res1 with
+          | BoolVal v -> BoolVal (not v)
+          | _         -> invalidOperand "Not on non-boolean args: " Bool res1 pos
+
+  | Negate(e1, pos) ->
+        let res1   = evalExp(e1, vtab, ftab)
+        match res1 with
+          | IntVal v -> IntVal (-1*v)
+          | _        -> invalidOperand "Negate on non-intergral args: " Bool res1 pos
 
 ///////////////////////////////
 
@@ -281,8 +303,20 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
          the value of `a`; otherwise raise an error (containing
          a meaningful message).
   *)
-  | Replicate (_, _, _, _) ->
-        failwith "Unimplemented interpretation of replicate"
+  | Replicate (n, e, tp, pos) ->
+        let sz = evalExp(n, vtab, ftab)
+        let e_val = evalExp(e, vtab, ftab)
+        match sz with
+          | IntVal size ->
+              if size > 0
+              then match e_val with
+                  | IntVal  vally -> ArrayVal( List.replicate size (IntVal vally),  Int )
+                  | BoolVal vally -> ArrayVal( List.replicate size (BoolVal vally), Bool )
+                  | CharVal vally -> ArrayVal( List.replicate size (CharVal vally), Char )
+                  | ArrayVal (vally,tp) -> ArrayVal( List.replicate size (ArrayVal (vally, tp)), tp )
+                  | otherwise -> raise (MyError("Replicate argument is not a number: "+ppVal 0 sz, pos)) //IKKE KORREKT MESSAGE
+              else raise (MyError("n is too small, has to be over 0"+ppVal 0 sz, pos))
+          | _ -> raise (MyError("n is too small, has to be over 0"+ppVal 0 sz, pos)) // WRONG MESSAGE
 
   (* TODO project task 2: `filter(p, arr)`
        pattern match the implementation of map:
@@ -299,8 +333,21 @@ let rec evalExp (e : UntypedExp, vtab : VarTable, ftab : FunTable) : Value =
      Implementation similar to reduce, except that it produces an array
      of the same type and length to the input array `arr`.
   *)
-  | Scan (_, _, _, _, _) ->
-        failwith "Unimplemented interpretation of scan"
+  | Scan (farg, ne, arrexp, tp, pos) ->
+  //        failwith "Unimplemented interpretation of scan"
+         let farg_ret_type = rtpFunArg farg ftab pos
+         let arr  = evalExp(arrexp, vtab, ftab)
+         let nel  = evalExp(ne, vtab, ftab)
+         match arr with
+           | ArrayVal (lst,tp1) ->
+                 let emptarr = []
+                 let mutable arrOut = List.append emptarr [evalFunArg (farg, vtab, ftab, pos, [nel;lst.[0]])]
+                 for i = 1 to lst.Length - 1 do
+                     arrOut <- List.append arrOut [evalFunArg (farg, vtab, ftab, pos, [arrOut.[i-1];lst.[i]])]
+                 ArrayVal(arrOut, farg_ret_type)
+                 //List.scan (fun acc n -> evalFunArg (farg, vtab, ftab, pos, [acc;n])) 0 |> List.tail;;)
+           | otherwise -> raise (MyError("Third argument of scan is not an array: "+ppVal 0 arr
+                                        , pos))
 
   | Read (t,p) ->
         let str = Console.ReadLine()
