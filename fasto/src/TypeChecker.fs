@@ -323,8 +323,8 @@ and checkExp  (ftab : FunTable)
               scan's return type is the same as the type of `arr`,
               while reduce's return type is that of an element of `arr`).
     *)
-   
- | Scan (f, n_exp, arr_exp, _, pos) ->
+
+    | Scan (f, n_exp, arr_exp, _, pos) ->
         let (n_type  , n_dec  ) = checkExp ftab vtab n_exp
         let (arr_type, arr_dec) = checkExp ftab vtab arr_exp
         let elem_type =

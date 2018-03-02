@@ -29,40 +29,40 @@ main:
 	jal	getint
 # was:	jal	getint, 2
 # 	ori	_letBind_3_,2,0
-# 	ori	_minus_L_14_,_letBind_2_,0
+# 	ori	_minus_L_13_,_letBind_2_,0
 	ori	$10, $0, 1
-# was:	ori	_minus_R_15_, 0, 1
+# was:	ori	_minus_R_14_, 0, 1
 	sub	$10, $16, $10
-# was:	sub	_eq_L_11_, _minus_L_14_, _minus_R_15_
+# was:	sub	_eq_L_11_, _minus_L_13_, _minus_R_14_
 	ori	$12, $0, 1
-# was:	ori	_zero_13_, 0, 1
+# was:	ori	_eq_R_12_, 0, 1
 	ori	$11, $0, 0
 # was:	ori	_and_L_8_, 0, 0
-	bne	$10, $12, _false_16_
-# was:	bne	_eq_L_11_, _zero_13_, _false_16_
+	bne	$10, $12, _false_15_
+# was:	bne	_eq_L_11_, _eq_R_12_, _false_15_
 	ori	$11, $0, 1
 # was:	ori	_and_L_8_, 0, 1
-_false_16_:
+_false_15_:
 	ori	$14, $0, 0
 # was:	ori	_zero_10_, 0, 0
 	ori	$10, $0, 0
 # was:	ori	_cond_7_, 0, 0
 	beq	$11, $14, false
 # was:	beq	_and_L_8_, _zero_10_, false
-# 	ori	_times_L_20_,_letBind_3_,0
+# 	ori	_times_L_18_,_letBind_3_,0
 	ori	$11, $0, 2
-# was:	ori	_times_R_21_, 0, 2
+# was:	ori	_times_R_19_, 0, 2
 	mul	$11, $2, $11
-# was:	mul	_eq_L_17_, _times_L_20_, _times_R_21_
+# was:	mul	_eq_L_16_, _times_L_18_, _times_R_19_
 	ori	$13, $0, 4
-# was:	ori	_zero_19_, 0, 4
+# was:	ori	_eq_R_17_, 0, 4
 	ori	$12, $0, 0
 # was:	ori	_and_R_9_, 0, 0
-	bne	$11, $13, _false_22_
-# was:	bne	_eq_L_17_, _zero_19_, _false_22_
+	bne	$11, $13, _false_20_
+# was:	bne	_eq_L_16_, _eq_R_17_, _false_20_
 	ori	$12, $0, 1
 # was:	ori	_and_R_9_, 0, 1
-_false_22_:
+_false_20_:
 	beq	$12, $14, false
 # was:	beq	_and_R_9_, _zero_10_, false
 	ori	$10, $0, 1
@@ -73,7 +73,21 @@ false:
 	j	_else_5_
 _then_4_:
 	ori	$16, $0, 1
-# was:	ori	_tmp_23_, 0, 1
+# was:	ori	_tmp_21_, 0, 1
+# 	ori	_mainres_1_,_tmp_21_,0
+	la	$2, _true
+# was:	la	2, _true
+	bne	$16, $0, _wBoolF_22_
+# was:	bne	_mainres_1_, 0, _wBoolF_22_
+	la	$2, _false
+# was:	la	2, _false
+_wBoolF_22_:
+	jal	putstring
+# was:	jal	putstring, 2
+	j	_endif_6_
+_else_5_:
+	ori	$16, $0, 0
+# was:	ori	_tmp_23_, 0, 0
 # 	ori	_mainres_1_,_tmp_23_,0
 	la	$2, _true
 # was:	la	2, _true
@@ -82,20 +96,6 @@ _then_4_:
 	la	$2, _false
 # was:	la	2, _false
 _wBoolF_24_:
-	jal	putstring
-# was:	jal	putstring, 2
-	j	_endif_6_
-_else_5_:
-	ori	$16, $0, 0
-# was:	ori	_tmp_25_, 0, 0
-# 	ori	_mainres_1_,_tmp_25_,0
-	la	$2, _true
-# was:	la	2, _true
-	bne	$16, $0, _wBoolF_26_
-# was:	bne	_mainres_1_, 0, _wBoolF_26_
-	la	$2, _false
-# was:	la	2, _false
-_wBoolF_26_:
 	jal	putstring
 # was:	jal	putstring, 2
 _endif_6_:

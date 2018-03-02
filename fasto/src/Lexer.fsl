@@ -13,8 +13,6 @@
 // TODO: project task 4
 //   implement the lexer tokens (keywords) for array comprehension
 ////////////////////////////////////////////////////////////////////
-
-
 {
 module Lexer
 
@@ -66,11 +64,11 @@ let keyword (s, pos) =
 //////////////// RETTET ////////////////
        | "true"         -> Parser.TRUE (true, pos)
        | "false"        -> Parser.FALSE (false, pos)
-//       | "replicate"    -> Parser.REPLICATE pos
+       | "replicate"    -> Parser.REPLICATE pos
 //       | "filter"          -> Parser.FILTER pos
-//       | "scan"         -> Parser.SCAN pos
+       | "scan"         -> Parser.SCAN pos
        | "not"          -> Parser.NOT pos
-       | "negate"       -> Parser.NEGATE pos
+//       | "negate"       -> Parser.NEGATE pos
 ////////////////////////////////////////
 
 

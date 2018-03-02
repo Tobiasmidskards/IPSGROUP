@@ -172,9 +172,14 @@ let rec compileExp  (e      : TypedExp)
       else
         [ Mips.LUI (place, makeConst (n / 65536))
         ; Mips.ORI (place, place, makeConst (n % 65536)) ]
-  | Constant (BoolVal _, _) ->
       (* TODO project task 1: represent `true`/`false` values as `1`/`0` *)
-      failwith "Unimplemented code generation of boolean constants"
+//RETTET//////////////////////////////////////////
+  | Constant (BoolVal b, pos) ->                //
+      if b then                                 //
+        [ Mips.LI (place, makeConst 1) ]        //
+      else                                      //
+        [ Mips.LI (place, makeConst 0) ]        //
+//////////////////////////////////////////////////
   | Constant (CharVal c, pos) -> [ Mips.LI (place, makeConst (int c)) ]
 
   (* Create/return a label here, collect all string literals of the program
@@ -260,11 +265,17 @@ let rec compileExp  (e      : TypedExp)
       let code2 = compileExp e2 vtable t2
       code1 @ code2 @ [Mips.DIV (place,t1,t2)]
 
-  | Not (_, _) ->
-      failwith "Unimplemented code generation of not"
+  | Not (e1, pos) ->
+      let t1 = newName "not"
+      let code1 = compileExp e1 vtable t1
+      code1 @
+       [ Mips.XORI (place, t1, "1") ]
 
-  | Negate (_, _) ->
-      failwith "Unimplemented code generation of negate"
+  | Negate (e1, pos) ->
+      let t1 = newName "neg"
+      let zero = newName "zero"
+      let code1 = compileExp e1 vtable t1
+      code1 @ [ Mips.LI(zero, "0") ; Mips.SUB(place, zero, t1) ]
 
 ////////////////////////////////////////////////
 
@@ -417,12 +428,41 @@ let rec compileExp  (e      : TypedExp)
         in `e1 || e2` if the execution of `e1` will evaluate to `true` then
         the code of `e2` must not be executed. Similar for `And` (&&).
   *)
-  | And (_, _, _) ->
-      failwith "Unimplemented code generation of &&"
 
-  | Or (_, _, _) ->
-      failwith "Unimplemented code generation of ||"
+/////////////// RETTET /////////////////////
+  | And (e1, e2, pos) ->
+      let t1 = newName "and_L"
+      let t2 = newName "and_R"
+      let z = newName "zero"
+      let code1 = compileExp e1 vtable t1
+      let code2 = compileExp e2 vtable t2
+      let falseLabel = "false"
+      code1 @
+       [ Mips.LI (z, "0")
+       ; Mips.LI (place, "0")
+       ; Mips.BEQ (t1,z,falseLabel) ]
+       @ code2 @
+       [ Mips.BEQ (t2,z,falseLabel)
+       ; Mips.LI (place, "1")
+       ; Mips.LABEL falseLabel ]
 
+  | Or (e1, e2, pos) ->
+      let t1 = newName "and_L"
+      let t2 = newName "and_R"
+      let o = newName "one"
+      let code1 = compileExp e1 vtable t1
+      let code2 = compileExp e2 vtable t2
+      let trueLabel = "true"
+      code1 @
+       [ Mips.LI (o, "1")
+       ; Mips.LI (place, "1")
+       ; Mips.BEQ (t1,o,trueLabel) ]
+       @ code2 @
+       [ Mips.BEQ (t2,o,trueLabel)
+       ; Mips.LI (place, "0")
+       ; Mips.LABEL trueLabel ]
+
+////////////////////////////////////////////////
   (* Indexing:
      1. generate code to compute the index
      2. check index within bounds
@@ -630,8 +670,49 @@ let rec compileExp  (e      : TypedExp)
         If `n` is less than `0` then remember to terminate the program with
         an error -- see implementation of `iota`.
   *)
-  | Replicate (_, _, _, _) ->
-      failwith "Unimplemented code generation of replicate"
+  | Replicate (n, e, e_type, pos) ->
+    let size_reg = newName "size_reg"
+    let n_code = compileExp n vtable size_reg
+    let e_reg = newName "e_reg"
+    let e_code = compileExp e vtable e_reg
+    let safe_lab = newName "safe_lab"
+
+    let checksize = [ Mips.ADDI (size_reg, size_reg, "-1")
+                    ; Mips.BGEZ (size_reg, safe_lab)
+                    ; Mips.J "_IllegalArrSizeError_"
+                    ; Mips.LABEL (safe_lab)
+                    ; Mips.ADDI (size_reg, size_reg, "1")
+                    ]
+
+    let addr_reg = newName "addr_reg"
+    let i_reg = newName "i_reg"
+    let init_regs = [ Mips.ADDI (addr_reg, place, "4")
+                    ; Mips.MOVE (i_reg, "0") ]
+    let douve = dynalloc(size_reg, place, e_type)
+    let loop_beg = newName "loop_beg"
+    let loop_end = newName "loop_end"
+    let tmp_reg = newName "tmp_reg"
+    let loop_header = [ Mips.LABEL loop_beg
+                      ; Mips.SUB (tmp_reg, i_reg, size_reg)
+                      ; Mips.BGEZ (tmp_reg, loop_end) ]
+    let loop_repl   =
+          match getElemSize e_type with
+            | One  -> [ Mips.SB (e_reg, addr_reg, "0")
+                      ; Mips.ADDI (addr_reg, addr_reg, "1") ]
+            | Four -> [ Mips.SW (e_reg, addr_reg, "0")
+                      ; Mips.ADDI (addr_reg, addr_reg, "4") ]
+
+    let loop_footer = [ Mips.ADDI (i_reg, i_reg, "1")
+                      ; Mips.J loop_beg
+                      ; Mips.LABEL loop_end ]
+    n_code
+      @ e_code
+      @ checksize
+      @ douve
+      @ init_regs
+      @ loop_header
+      @ loop_repl
+      @ loop_footer
 
   (* TODO project task 2: see also the comment to replicate.
      (a) `filter(f, arr)`:  has some similarity with the implementation of map.
@@ -688,6 +769,61 @@ let rec compileExp  (e      : TypedExp)
 //      [Mips.SW(acc_reg, res_it, "0"); Mips.ADDI(res_it, res_it, "4");
 //       Mips.ADDI(inp_it, inp_it, "4"); Mips.ADDI(i_reg, i_reg, "1")] @
 //      [Mips.J loop_beg; Mips.LABEL loop_end]
+
+  | Scan (binop, acc_exp, arr_exp, tp, pos) ->
+      let arr_reg  = newName "arr_reg"
+      let acc_reg  = newName "acc_reg"
+      let rez_reg  = newName "rez_reg"
+      let size_reg = newName "size_reg"
+      let i_reg    = newName "ind_var"
+      let tmp_reg  = newName "tmp_reg"
+      let loop_beg = newName "loop_beg"
+      let loop_end = newName "loop_end"
+
+      let arr_code = compileExp arr_exp vtable arr_reg
+      let header1  = [ Mips.LW(size_reg, arr_reg, "0") ]
+      let douve    = dynalloc(size_reg, place, tp)
+      let acc_code = compileExp acc_exp vtable acc_reg
+
+      let loop_code =
+              [ Mips.ADDI(arr_reg, arr_reg, "4")
+              ; Mips.ADDI(rez_reg, place, "4")
+              ; Mips.MOVE(i_reg, "0")
+              ; Mips.LABEL(loop_beg)
+              ; Mips.SUB(tmp_reg, i_reg, size_reg)
+              ; Mips.BGEZ(tmp_reg, loop_end) ]
+
+      let newRegInQuest =
+              match getElemSize tp with
+                | One  -> [ Mips.LB(tmp_reg, arr_reg, "0") ]
+                | Four -> [ Mips.LW(tmp_reg, arr_reg, "0") ]
+
+      let apply_code = applyFunArg(binop, [acc_reg; tmp_reg], vtable, acc_reg, pos)
+
+      let nextArrayBlock =
+              match getElemSize tp with
+                | One  -> [ Mips.SB(acc_reg, rez_reg, "0")
+                          ; Mips.ADDI(arr_reg, arr_reg, "1")
+                          ; Mips.ADDI(rez_reg, rez_reg, "1") ]
+                | Four -> [ Mips.SW(acc_reg, rez_reg, "0")
+                          ; Mips.ADDI(arr_reg, arr_reg, "4")
+                          ; Mips.ADDI(rez_reg, rez_reg, "4") ]
+
+
+      let loop_end =
+              [ Mips.ADDI(i_reg, i_reg, "1")
+              ; Mips.J loop_beg
+              ; Mips.LABEL loop_end ]
+
+      arr_code
+        @ header1
+        @ douve
+        @ acc_code
+        @ loop_code
+        @ newRegInQuest
+        @ apply_code
+        @ nextArrayBlock
+        @ loop_end
 
 and applyFunArg ( ff     : TypedFunArg
                 , args   : Mips.reg list
