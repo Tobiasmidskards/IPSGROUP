@@ -140,6 +140,9 @@ Exp : NUM            { Constant (IntVal (fst $1), snd $1) }
     | Exp OR     Exp { Or     ($1, $3, $2) }   //
     | NOT Exp        { Not    ($2, $1) }       //
     | NEGATE Exp     { Negate ($2, $1) }       //
+    | REPLICATE LPAR Exp    COMMA Exp RPAR { Replicate ($3, $5, (), $1) }
+ //FILTER MANGLER 
+    | SCAN LPAR FunArg COMMA Exp COMMA Exp RPAR { Scan ($3, $5, $7, () , $1) }
 ///////////////////////////////////
 
     | Exp DEQ   Exp  { Equal($1, $3, $2) }
